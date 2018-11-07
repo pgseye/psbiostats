@@ -5,7 +5,7 @@ theme = "resume"
 
 [params]
     firstName = "Paul"
-    lastName = "Sanfilippo"
+    lastName = "Sanfilippo..."
     quals = "M.Biostat,  PhD"
     address = "Melbourne, Australia"
     contactNote = "Biostatistician and Data Scientist"
