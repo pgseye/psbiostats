@@ -1,0 +1,12 @@
+[
+  {
+      "grouping":"Software",
+      "skills":[ "R (10+ years)","Stata","Excel","Word","Latex"]
+  },{
+      "grouping":"Statistics/Data Science",
+      "skills":[ "Regression/Classification Methods", "Prediction/Inference", "Survival Analysis", "Data Visualisation", "Machine Learning"]
+  },{
+      "grouping":"Other",
+      "skills":[ "Proficient in English", "Strong Academic Writer", "Strong Track Record in Research and Publication" ]
+  }
+]

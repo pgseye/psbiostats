@@ -1,0 +1,34 @@
+baseURL = "https://example.com/"
+languageCode = "en-us"
+title = "Paul Sanfilippo"
+theme = "resume"
+
+[params]
+    firstName = "Paul"
+    lastName = "Sanfilippo"
+    quals = "M.Biostat,  PhD"
+    address = "Melbourne, Australia"
+    contactNote = "Biostatistician and Data Scientist"
+    profileImage = "img/me_main.jpg"
+    email = "prseye@gmail.com"
+    description = "Biostatistician and Data Scientist"
+    favicon = "images/favicon.ico"
+    # what sections
+    showSkills = true
+    showProjects = false
+    showPublications = true
+    showExperience = true
+    showEducation = true
+
+    showQr = false
+
+[[params.handles]]
+    name = "LinkedIn"
+    link = "https://www.linkedin.com/in/paul-sanfilippo-08928516/"
+
+[[params.handles]]
+    name = "GitHub"
+    link = "https://github.com/pgseye"
+
+[params.google.analytics]
+    trackerID = "XX-123446-01"
