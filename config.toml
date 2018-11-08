@@ -26,10 +26,18 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 [[params.handles]]
     name = "LinkedIn"
     link = "https://www.linkedin.com/in/paul-sanfilippo-08928516/"
+    
+[[params.handles]]
+    name = "Google Scholar"
+    link = "https://scholar.google.com.au/citations?hl=en&user=WRWsp2sAAAAJ&view_op=list_works&sortby=pubdate"  
+    
+[[params.handles]]
+    name = "Twitter"
+    link = "https://twitter.com/pgseye"    
 
 [[params.handles]]
     name = "GitHub"
     link = "https://github.com/pgseye"
 
 [params.google.analytics]
-    trackerID = "XX-123446-01"
+    trackerID = "UA-128998286-1"
