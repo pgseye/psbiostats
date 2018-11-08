@@ -2,6 +2,7 @@ baseURL = "https://psbiostats.rbind.io/"
 languageCode = "en-us"
 title = "Paul Sanfilippo"
 theme = "resume"
+ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 
 [params]
     firstName = "Paul"
@@ -15,7 +16,7 @@ theme = "resume"
     favicon = "images/favicon.ico"
     # what sections
     showSkills = true
-    showProjects = false
+    showProjects = true
     showPublications = true
     showExperience = true
     showEducation = true
