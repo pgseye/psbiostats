@@ -1,4 +1,4 @@
-baseURL = "http://www.psbiostats.rbind.io/"
+baseURL = "https://psbiostats.rbind.io/"
 languageCode = "en-us"
 title = "Paul Sanfilippo"
 theme = "resume"
