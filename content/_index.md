@@ -15,6 +15,6 @@ outputs:
 
 <p> &nbsp; </p>
 
-Written in <a href="https://www.rstudio.com/"><img src="rstudio.png"></a> Powered by <a href="https://gohugo.io"><img src="hugo.jpg"></a> Theme is <a href="https://themes.gohugo.io/hugo-resume/">Resume</a>
+Written in <a href="https://www.rstudio.com/">RStudio</a>. Powered by <a href="https://gohugo.io">HUGO</a>. Theme is <a href="https://themes.gohugo.io/hugo-resume/">Resume</a>.
 
 <p> &nbsp; </p>
