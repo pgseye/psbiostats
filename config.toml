@@ -1,4 +1,4 @@
-baseURL = "https://nifty-goldberg-962511.netlify.com/"
+baseURL = "http://www.psbiostats.rbind.io/"
 languageCode = "en-us"
 title = "Paul Sanfilippo"
 theme = "resume"
