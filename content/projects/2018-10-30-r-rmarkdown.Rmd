@@ -9,7 +9,11 @@ featured: true
 ---
 
 <style>
-div.grey pre { background-color:#E8E8E8; }
+div.grey pre { background-color:#F5F8FA;
+               padding-top: 10px;
+               padding-bottom: 10px;
+               padding-left: 10px;
+}
 </style>
 
 
