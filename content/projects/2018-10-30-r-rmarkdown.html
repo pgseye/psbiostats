@@ -17,55 +17,27 @@ div.grey pre { background-color:#F5F8FA;
                padding-left: 10px;
 }
 </style>
-<p><br><br></p>
+<div id="descriptives" class="section level3">
+<h3>Descriptives</h3>
+<p>The basic frequency histogram for Left and Right eye data, constructed with ggplot2.</p>
 <div class="grey">
-<pre class="r"><code># Plot
-hist_va &lt;-ggplot(dat_long, aes(x = bcva, fill = bcva &lt; -0.1)) +
+<pre class="r"><code>hist_va &lt;-ggplot(data, aes(x = bcva, fill = bcva &lt; -0.1)) +
   geom_histogram(color = &quot;black&quot;,  binwidth = 0.05, center = 0.025) +
   scale_x_continuous(limits = c(-0.4, 0.4), breaks = seq(-0.4,0.4,0.1)) +
   theme(legend.position=&quot;none&quot;) +
   xlab(&quot;Best Corrected Visual Acuity (logMAR)&quot;) +
   ylab(&quot;Frequency &quot;) +
   scale_fill_manual(values = c(&quot;white&quot;, &quot;red&quot;)) +
-  facet_grid(. ~ eye)
-# Add Supervision cutoff lines
-hist_va + 
-  geom_vline(data = dat, aes(xintercept = -0.097, color = &quot;red&quot;), linetype = &quot;dashed&quot;) +
+  facet_grid(. ~ eye)</code></pre>
+<p>Then overlaying the classification thresholds for SuperHuman vision.</p>
+<pre class="r"><code>hist_va + 
+  geom_vline(data = data, aes(xintercept = -0.097, color = &quot;red&quot;), linetype = &quot;dashed&quot;) +
   geom_text(aes(-0.25, 420, label = &quot;Superhuman Vision&quot;, color = &quot;red&quot;))</code></pre>
+<p>And we end up with:</p>
 <p><img src="/figs/svfig1.png" alt="png" width="800"/></p>
-<h3 id="r-markdown">R Markdown</h3>
-<p>This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <a href="http://rmarkdown.rstudio.com" class="uri">http://rmarkdown.rstudio.com</a>.</p>
-<p>You can embed an R code chunk like this:</p>
-<pre class="r"><code>summary(cars)
-##      speed           dist       
-##  Min.   : 4.0   Min.   :  2.00  
-##  1st Qu.:12.0   1st Qu.: 26.00  
-##  Median :15.0   Median : 36.00  
-##  Mean   :15.4   Mean   : 42.98  
-##  3rd Qu.:19.0   3rd Qu.: 56.00  
-##  Max.   :25.0   Max.   :120.00
-fit &lt;- lm(dist ~ speed, data = cars)
-fit
-## 
-## Call:
-## lm(formula = dist ~ speed, data = cars)
-## 
-## Coefficients:
-## (Intercept)        speed  
-##     -17.579        3.932</code></pre>
-<h3 id="including-plots">Including Plots</h3>
-<p>You can also embed plots. See Figure <a href="#fig:pie">1</a> for example:</p>
-<pre class="r"><code>par(mar = c(0, 1, 0, 1))
-pie(
-  c(280, 60, 20),
-  c(&#39;Sky&#39;, &#39;Sunny side of pyramid&#39;, &#39;Shady side of pyramid&#39;),
-  col = c(&#39;#0292D8&#39;, &#39;#F7EA39&#39;, &#39;#C4B632&#39;),
-  init.angle = -50, border = NA
-)</code></pre>
-<div class="figure"><span id="fig:pie"></span>
-<img src="/projects/2018-10-30-r-rmarkdown_files/figure-html/pie-1.png" alt="A fancy pie chart." width="672" />
-<p class="caption">
-Figure 1: A fancy pie chart.
-</p>
+<p><br><br></p>
+<h3 id="classical-modelling-logistic-regression">Classical Modelling (Logistic Regression)</h3>
+<p><br><br></p>
+<h3 id="machine-learning-penalised-regression">Machine Learning (Penalised Regression)</h3>
 </div>
 </div>

@@ -22,12 +22,14 @@ div.grey pre { background-color:#F5F8FA;
 knitr::opts_chunk$set(collapse = TRUE)
 ```
 
-<br><br>
+
+### Descriptives
+
+The basic frequency histogram for Left and Right eye data, constructed with ggplot2.
 
 <div class = "grey">
 ```{r, eval=F}
-# Plot
-hist_va <-ggplot(dat_long, aes(x = bcva, fill = bcva < -0.1)) +
+hist_va <-ggplot(data, aes(x = bcva, fill = bcva < -0.1)) +
   geom_histogram(color = "black",  binwidth = 0.05, center = 0.025) +
   scale_x_continuous(limits = c(-0.4, 0.4), breaks = seq(-0.4,0.4,0.1)) +
   theme(legend.position="none") +
@@ -35,41 +37,32 @@ hist_va <-ggplot(dat_long, aes(x = bcva, fill = bcva < -0.1)) +
   ylab("Frequency ") +
   scale_fill_manual(values = c("white", "red")) +
   facet_grid(. ~ eye)
-# Add Supervision cutoff lines
+```
+
+Then overlaying the classification thresholds for SuperHuman vision.
+
+```{r, eval=F}
 hist_va + 
-  geom_vline(data = dat, aes(xintercept = -0.097, color = "red"), linetype = "dashed") +
+  geom_vline(data = data, aes(xintercept = -0.097, color = "red"), linetype = "dashed") +
   geom_text(aes(-0.25, 420, label = "Superhuman Vision", color = "red"))
 ```
 
+And we end up with:
 
 <img src="/figs/svfig1.png" alt="png" width="800"/>
 
 
 
+<br><br>
 
-### R Markdown
+### Classical Modelling (Logistic Regression)
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-You can embed an R code chunk like this:
 
-```{r cars}
-summary(cars)
-fit <- lm(dist ~ speed, data = cars)
-fit
-```
+<br><br>
 
-### Including Plots
+### Machine Learning (Penalised Regression)
 
-You can also embed plots. See Figure \@ref(fig:pie) for example:
 
-```{r pie, fig.cap='A fancy pie chart.', tidy=FALSE}
-par(mar = c(0, 1, 0, 1))
-pie(
-  c(280, 60, 20),
-  c('Sky', 'Sunny side of pyramid', 'Shady side of pyramid'),
-  col = c('#0292D8', '#F7EA39', '#C4B632'),
-  init.angle = -50, border = NA
-)
-```
+
 </div>
