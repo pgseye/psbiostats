@@ -11,39 +11,19 @@ featured: true
 
 
 <p><br><br></p>
-<pre class="r"><code>summary(multmod_final &lt;- geeglm(bcva ~ age + sex + sph + cyl + sum_out + head_circum_age0 + 
-head_circum_growth_8to10, id = subject, data = dat_long_cut2, family = gaussian, corstr = &quot;exchangeable&quot;))</code></pre>
-<pre class="r"><code>Call:
-geeglm(formula = bcva ~ age + sex + sph + cyl + sum_out + head_circum_age0 + 
-    head_circum_growth_8to10, family = gaussian, data = dat_long_cut2, 
-    id = subject, corstr = &quot;exchangeable&quot;)
-
- Coefficients:
-                                   Estimate  Std.err  Wald Pr(&gt;|W|)    
-(Intercept)                         0.32820  0.12277  7.15   0.0075 ** 
-age                                -0.01108  0.00548  4.08   0.0434 *  
-sexM                               -0.02011  0.00474 18.01  2.2e-05 ***
-sph                                -0.00803  0.00201 15.94  6.5e-05 ***
-cyl                                -0.05085  0.00729 48.66  3.1e-12 ***
-sum_outLess than 1/4 of the day    -0.04366  0.01070 16.64  4.5e-05 ***
-sum_out1/2 of the day              -0.04590  0.01085 17.88  2.4e-05 ***
-sum_outGreater than 3/4 of the day -0.04910  0.01247 15.49  8.3e-05 ***
-sum_outCannot judge                -0.02523  0.01246  4.10   0.0429 *  
-head_circum_age0                   -0.00423  0.00133 10.07   0.0015 ** 
-head_circum_growth_8to10            0.00648  0.00275  5.54   0.0186 *  
----
-Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-
-Estimated Scale Parameters:
-            Estimate  Std.err
-(Intercept)  0.00517 0.000391
-
-Correlation: Structure = exchangeable  Link = identity 
-
-Estimated Correlation Parameters:
-      Estimate Std.err
-alpha    0.652  0.0296
-Number of clusters:   824   Maximum cluster size: 2 </code></pre>
+<pre class="r"><code># Plot
+hist_va &lt;-ggplot(dat_long, aes(x = bcva, fill = bcva &lt; -0.1)) +
+  geom_histogram(color = &quot;black&quot;,  binwidth = 0.05, center = 0.025) +
+  scale_x_continuous(limits = c(-0.4, 0.4), breaks = seq(-0.4,0.4,0.1)) +
+  theme(legend.position=&quot;none&quot;) +
+  xlab(&quot;Best Corrected Visual Acuity (logMAR)&quot;) +
+  ylab(&quot;Frequency &quot;) +
+  scale_fill_manual(values = c(&quot;white&quot;, &quot;red&quot;)) +
+  facet_grid(. ~ eye)
+# Add Supervision cutoff lines
+hist_va + 
+  geom_vline(data = dat, aes(xintercept = -0.097, color = &quot;red&quot;), linetype = &quot;dashed&quot;) +
+  geom_text(aes(-0.25, 420, label = &quot;Superhuman Vision&quot;, color = &quot;red&quot;))</code></pre>
 <p><img src="/figs/svfig1.png" alt="png" width="800"/></p>
 <div id="r-markdown" class="section level3">
 <h3>R Markdown</h3>
