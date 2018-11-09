@@ -1,0 +1,86 @@
+---
+title: "Predictors of SuperHuman Vision"
+author: "Paul Sanfilippo"
+date: 2018-10-30T21:13:14-05:00
+description: "Under construction..."
+categories: ["R"]
+tags: ["R Markdown", "plot", "regression"]
+featured: true
+---
+
+
+
+<p><br><br></p>
+<pre class="r"><code>summary(multmod_final &lt;- geeglm(bcva ~ age + sex + sph + cyl + sum_out + head_circum_age0 + 
+head_circum_growth_8to10, id = subject, data = dat_long_cut2, family = gaussian, corstr = &quot;exchangeable&quot;))</code></pre>
+<pre class="r"><code>Call:
+geeglm(formula = bcva ~ age + sex + sph + cyl + sum_out + head_circum_age0 + 
+    head_circum_growth_8to10, family = gaussian, data = dat_long_cut2, 
+    id = subject, corstr = &quot;exchangeable&quot;)
+
+ Coefficients:
+                                   Estimate  Std.err  Wald Pr(&gt;|W|)    
+(Intercept)                         0.32820  0.12277  7.15   0.0075 ** 
+age                                -0.01108  0.00548  4.08   0.0434 *  
+sexM                               -0.02011  0.00474 18.01  2.2e-05 ***
+sph                                -0.00803  0.00201 15.94  6.5e-05 ***
+cyl                                -0.05085  0.00729 48.66  3.1e-12 ***
+sum_outLess than 1/4 of the day    -0.04366  0.01070 16.64  4.5e-05 ***
+sum_out1/2 of the day              -0.04590  0.01085 17.88  2.4e-05 ***
+sum_outGreater than 3/4 of the day -0.04910  0.01247 15.49  8.3e-05 ***
+sum_outCannot judge                -0.02523  0.01246  4.10   0.0429 *  
+head_circum_age0                   -0.00423  0.00133 10.07   0.0015 ** 
+head_circum_growth_8to10            0.00648  0.00275  5.54   0.0186 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Estimated Scale Parameters:
+            Estimate  Std.err
+(Intercept)  0.00517 0.000391
+
+Correlation: Structure = exchangeable  Link = identity 
+
+Estimated Correlation Parameters:
+      Estimate Std.err
+alpha    0.652  0.0296
+Number of clusters:   824   Maximum cluster size: 2 </code></pre>
+<p><img src="/projects/sv_fig1.pdf" alt="drawing" width="800"/></p>
+<div id="r-markdown" class="section level3">
+<h3>R Markdown</h3>
+<p>This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <a href="http://rmarkdown.rstudio.com" class="uri">http://rmarkdown.rstudio.com</a>.</p>
+<p>You can embed an R code chunk like this:</p>
+<pre class="r"><code>summary(cars)
+##      speed           dist       
+##  Min.   : 4.0   Min.   :  2.00  
+##  1st Qu.:12.0   1st Qu.: 26.00  
+##  Median :15.0   Median : 36.00  
+##  Mean   :15.4   Mean   : 42.98  
+##  3rd Qu.:19.0   3rd Qu.: 56.00  
+##  Max.   :25.0   Max.   :120.00
+fit &lt;- lm(dist ~ speed, data = cars)
+fit
+## 
+## Call:
+## lm(formula = dist ~ speed, data = cars)
+## 
+## Coefficients:
+## (Intercept)        speed  
+##     -17.579        3.932</code></pre>
+</div>
+<div id="including-plots" class="section level3">
+<h3>Including Plots</h3>
+<p>You can also embed plots. See Figure <a href="#fig:pie">1</a> for example:</p>
+<pre class="r"><code>par(mar = c(0, 1, 0, 1))
+pie(
+  c(280, 60, 20),
+  c(&#39;Sky&#39;, &#39;Sunny side of pyramid&#39;, &#39;Shady side of pyramid&#39;),
+  col = c(&#39;#0292D8&#39;, &#39;#F7EA39&#39;, &#39;#C4B632&#39;),
+  init.angle = -50, border = NA
+)</code></pre>
+<div class="figure"><span id="fig:pie"></span>
+<img src="/projects/2018-10-30-r-rmarkdown_files/figure-html/pie-1.png" alt="A fancy pie chart." width="672" />
+<p class="caption">
+Figure 1: A fancy pie chart.
+</p>
+</div>
+</div>
