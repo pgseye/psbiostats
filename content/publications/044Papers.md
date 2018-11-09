@@ -1,5 +1,5 @@
 ---
-title: "A randomized clinical trial of ranibizumab plus laser-induced chorioretinal anastomosis versus ranibizumab monotherapy for central retinal vein occlusion: 2-year results."
+title: "Two-Year Efficacy of Ranibizumab Plus Laser-Induced Chorioretinal Anastomosis vs Ranibizumab Monotherapy for Central Retinal Vein Occlusion: A Randomized Clinical Trial."
 date: 2018-08-02
 pubtype: ""
 featured: true
