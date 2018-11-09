@@ -8,12 +8,19 @@ tags: ["regression", "plot"]
 featured: true
 ---
 
+<style>
+div.grey pre { background-color:#E8E8E8; }
+</style>
+
+
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(collapse = TRUE)
 ```
 
 <br><br>
 
+<div class = "grey">
 ```{r, eval=F}
 # Plot
 hist_va <-ggplot(dat_long, aes(x = bcva, fill = bcva < -0.1)) +
@@ -29,6 +36,8 @@ hist_va +
   geom_vline(data = dat, aes(xintercept = -0.097, color = "red"), linetype = "dashed") +
   geom_text(aes(-0.25, 420, label = "Superhuman Vision", color = "red"))
 ```
+
+
 <img src="/figs/svfig1.png" alt="png" width="800"/>
 
 
@@ -59,3 +68,4 @@ pie(
   init.angle = -50, border = NA
 )
 ```
+</div>

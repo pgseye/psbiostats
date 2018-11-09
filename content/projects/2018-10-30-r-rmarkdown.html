@@ -10,7 +10,11 @@ featured: true
 
 
 
+<style>
+div.grey pre { background-color:#E8E8E8; }
+</style>
 <p><br><br></p>
+<div class="grey">
 <pre class="r"><code># Plot
 hist_va &lt;-ggplot(dat_long, aes(x = bcva, fill = bcva &lt; -0.1)) +
   geom_histogram(color = &quot;black&quot;,  binwidth = 0.05, center = 0.025) +
@@ -25,8 +29,7 @@ hist_va +
   geom_vline(data = dat, aes(xintercept = -0.097, color = &quot;red&quot;), linetype = &quot;dashed&quot;) +
   geom_text(aes(-0.25, 420, label = &quot;Superhuman Vision&quot;, color = &quot;red&quot;))</code></pre>
 <p><img src="/figs/svfig1.png" alt="png" width="800"/></p>
-<div id="r-markdown" class="section level3">
-<h3>R Markdown</h3>
+<h3 id="r-markdown">R Markdown</h3>
 <p>This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <a href="http://rmarkdown.rstudio.com" class="uri">http://rmarkdown.rstudio.com</a>.</p>
 <p>You can embed an R code chunk like this:</p>
 <pre class="r"><code>summary(cars)
@@ -46,9 +49,7 @@ fit
 ## Coefficients:
 ## (Intercept)        speed  
 ##     -17.579        3.932</code></pre>
-</div>
-<div id="including-plots" class="section level3">
-<h3>Including Plots</h3>
+<h3 id="including-plots">Including Plots</h3>
 <p>You can also embed plots. See Figure <a href="#fig:pie">1</a> for example:</p>
 <pre class="r"><code>par(mar = c(0, 1, 0, 1))
 pie(
