@@ -4,7 +4,7 @@ author: "Paul Sanfilippo"
 date: 2018-10-30T21:13:14-05:00
 description: "Under construction..."
 categories: ["R"]
-tags: ["R Markdown", "plot", "regression"]
+tags: ["regression", "plot"]
 featured: true
 ---
 
@@ -53,7 +53,9 @@ alpha    0.652  0.0296
 Number of clusters:   824   Maximum cluster size: 2 
 ```
 
-<img src="/projects/sv_fig1.pdf" alt="drawing" width="800"/>
+
+[](/pdf/file1.pdf)
+<img src="/pdf/sv_fig1.pdf" alt="drawing" width="800"/>
 
 
 
