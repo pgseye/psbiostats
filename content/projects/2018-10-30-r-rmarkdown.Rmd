@@ -54,7 +54,8 @@ Number of clusters:   824   Maximum cluster size: 2
 ```
 
 
-<img src="https://github.com/pgseye/psbiostats/blob/master/static/pdf/sv_fig1.pdf" alt="drawing" width="800"/>
+
+![](/figs/svfig1.png)
 
 
 
