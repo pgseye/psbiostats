@@ -7,38 +7,63 @@ categories: ["R"]
 tags: ["regression", "plot"]
 featured: true
 image: "/img/super.png"
+output:
+  html_document:
+    highlight: default
 ---
 
 
 
 <style>
-div.grey pre { background-color:#F5F8FA;
-               padding-top: 10px;
-               padding-bottom: 10px;
-               padding-left: 10px;
+div.code pre { 
+                font-family: 'Source Code Pro', 'Courier New', monospace;
+                font-size: 12px;
+                background-color:#F5F8FA;
+                padding-top: 10px;
+                padding-bottom: 10px;
+                padding-left: 10px;
+                border: 1px solid lightgrey;
+                border-radius: 5px;
+}
+</style>
+<style>
+div.output pre { 
+                font-family: 'Source Code Pro', 'Courier New', monospace;
+                font-size: 12px;
+                padding-top: 10px;
+                padding-bottom: 10px;
+                padding-left: 10px;
+                border: 1px solid lightgrey;
+                border-radius: 5px;
 }
 </style>
 <div id="descriptives" class="section level3">
 <h3>Descriptives</h3>
 <p>The basic frequency histogram for Left and Right eye data, constructed with ggplot2.</p>
-<div class="grey">
+<div class="code">
 <pre class="r"><code>hist_va &lt;-ggplot(data, aes(x = bcva, fill = bcva &lt; -0.1)) +
   geom_histogram(color = &quot;black&quot;,  binwidth = 0.05, center = 0.025) +
-  scale_x_continuous(limits = c(-0.4, 0.4), breaks = seq(-0.4,0.4,0.1)) +
-  theme(legend.position=&quot;none&quot;) +
+  scale_x_continuous(limits = c(-0.4, 0.4), breaks = seq(-0.4, 0.4, 0.1)) +
+  theme(legend.position = &quot;none&quot;) +
   xlab(&quot;Best Corrected Visual Acuity (logMAR)&quot;) +
   ylab(&quot;Frequency &quot;) +
   scale_fill_manual(values = c(&quot;white&quot;, &quot;red&quot;)) +
   facet_grid(. ~ eye)</code></pre>
+</div>
 <p>Then overlaying the classification thresholds for SuperHuman vision.</p>
+<div class="code">
 <pre class="r"><code>hist_va + 
   geom_vline(data = data, aes(xintercept = -0.097, color = &quot;red&quot;), linetype = &quot;dashed&quot;) +
   geom_text(aes(-0.25, 420, label = &quot;Superhuman Vision&quot;, color = &quot;red&quot;))</code></pre>
+</div>
 <p>And we end up with:</p>
 <p><img src="/figs/svfig1.png" alt="png" width="800"/></p>
 <p><br><br></p>
-<h3 id="classical-modelling-logistic-regression">Classical Modelling (Logistic Regression)</h3>
-<p><br><br></p>
-<h3 id="machine-learning-penalised-regression">Machine Learning (Penalised Regression)</h3>
 </div>
+<div id="classical-modelling-logistic-regression" class="section level3">
+<h3>Classical Modelling (Logistic Regression)</h3>
+<p><br><br></p>
+</div>
+<div id="machine-learning-penalised-regression" class="section level3">
+<h3>Machine Learning (Penalised Regression)</h3>
 </div>

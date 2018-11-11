@@ -7,20 +7,43 @@ categories: ["R"]
 tags: ["regression", "plot"]
 featured: true
 image: "/img/super.png"
+output:
+  html_document:
+    highlight: default
 ---
 
 <style>
-div.grey pre { background-color:#F5F8FA;
-               padding-top: 10px;
-               padding-bottom: 10px;
-               padding-left: 10px;
+div.code pre { 
+                font-family: 'Source Code Pro', 'Courier New', monospace;
+                font-size: 12px;
+                background-color:#F5F8FA;
+                padding-top: 10px;
+                padding-bottom: 10px;
+                padding-left: 10px;
+                border: 1px solid lightgrey;
+                border-radius: 5px;
+}
+</style>
+
+<style>
+div.output pre { 
+                font-family: 'Source Code Pro', 'Courier New', monospace;
+                font-size: 12px;
+                padding-top: 10px;
+                padding-bottom: 10px;
+                padding-left: 10px;
+                border: 1px solid lightgrey;
+                border-radius: 5px;
 }
 </style>
 
 
-
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(collapse = TRUE)
+knitr::opts_chunk$set(collapse = F)
+```
+
+```{r, echo=FALSE}
+library(rmarkdown) #used for syntax highlighting in this document
 ```
 
 
@@ -28,25 +51,29 @@ knitr::opts_chunk$set(collapse = TRUE)
 
 The basic frequency histogram for Left and Right eye data, constructed with ggplot2.
 
-<div class = "grey">
-```{r, eval=F}
+<div class = "code">
+```{r hist, eval=F}
 hist_va <-ggplot(data, aes(x = bcva, fill = bcva < -0.1)) +
   geom_histogram(color = "black",  binwidth = 0.05, center = 0.025) +
-  scale_x_continuous(limits = c(-0.4, 0.4), breaks = seq(-0.4,0.4,0.1)) +
-  theme(legend.position="none") +
+  scale_x_continuous(limits = c(-0.4, 0.4), breaks = seq(-0.4, 0.4, 0.1)) +
+  theme(legend.position = "none") +
   xlab("Best Corrected Visual Acuity (logMAR)") +
   ylab("Frequency ") +
   scale_fill_manual(values = c("white", "red")) +
   facet_grid(. ~ eye)
 ```
+</div>
+
 
 Then overlaying the classification thresholds for SuperHuman vision.
 
-```{r, eval=F}
+<div class = "code">
+```{r hist2, eval=F}
 hist_va + 
   geom_vline(data = data, aes(xintercept = -0.097, color = "red"), linetype = "dashed") +
   geom_text(aes(-0.25, 420, label = "Superhuman Vision", color = "red"))
 ```
+</div>
 
 And we end up with:
 
@@ -65,5 +92,3 @@ And we end up with:
 ### Machine Learning (Penalised Regression)
 
 
-
-</div>
