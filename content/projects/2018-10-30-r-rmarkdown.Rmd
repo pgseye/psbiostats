@@ -7,9 +7,6 @@ categories: ["R"]
 tags: ["regression", "plot"]
 featured: true
 image: "/img/super.png"
-output:
-  html_document:
-    highlight: default
 ---
 
 <style>
@@ -42,9 +39,14 @@ div.output pre {
 knitr::opts_chunk$set(collapse = F)
 ```
 
-```{r, echo=FALSE}
-library(rmarkdown) #used for syntax highlighting in this document
-```
+<br>
+
+We wanted to model the relationship between various environmental, lifestyle, maternal, childhood and ophthalmic factors and best-corrected [visual acuity](https://en.wikipedia.org/wiki/Visual_acuity) (BCVA) in a young adult cohort. Data were available for 1252 patients.  
+
+A secondary aim was to compare the predictive power of a classical modelling method (logistic regression) with a machine learning technique (penalised regression). An excellent overview of the differences can be found in this [Nature](https://www.nature.com/articles/nmeth.4642) paper.  
+
+SuperHuman vision was defined as BCVA better than or equal to 6/5 vision (-0.1 logMAR) in at least one eye.  
+*Note* - ‘Normal’ vision is considered equivalent to 0.00 logMAR (or 6/6 (20/20) on the Snellen scale more commonly utilised in clinical practice).  
 
 
 ### Descriptives
@@ -52,7 +54,7 @@ library(rmarkdown) #used for syntax highlighting in this document
 The basic frequency histogram for Left and Right eye data, constructed with ggplot2.
 
 <div class = "code">
-```{r hist, eval=F}
+```{r hist, eval=F, tidy=F}
 hist_va <-ggplot(data, aes(x = bcva, fill = bcva < -0.1)) +
   geom_histogram(color = "black",  binwidth = 0.05, center = 0.025) +
   scale_x_continuous(limits = c(-0.4, 0.4), breaks = seq(-0.4, 0.4, 0.1)) +
@@ -78,6 +80,10 @@ hist_va +
 And we end up with:
 
 <img src="/figs/svfig1.png" alt="png" width="800"/>
+
+<br>
+
+About **42%** of patients had SuperHuman vision under this definition.  
 
 
 

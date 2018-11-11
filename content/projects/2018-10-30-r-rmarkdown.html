@@ -7,9 +7,6 @@ categories: ["R"]
 tags: ["regression", "plot"]
 featured: true
 image: "/img/super.png"
-output:
-  html_document:
-    highlight: default
 ---
 
 
@@ -37,6 +34,11 @@ div.output pre {
                 border-radius: 5px;
 }
 </style>
+<p><br></p>
+<p>We wanted to model the relationship between various environmental, lifestyle, maternal, childhood and ophthalmic factors and best-corrected <a href="https://en.wikipedia.org/wiki/Visual_acuity">visual acuity</a> (BCVA) in a young adult cohort. Data were available for 1252 patients.</p>
+<p>A secondary aim was to compare the predictive power of a classical modelling method (logistic regression) with a machine learning technique (penalised regression). An excellent overview of the differences can be found in this <a href="https://www.nature.com/articles/nmeth.4642">Nature</a> paper.</p>
+<p>SuperHuman vision was defined as BCVA better than or equal to 6/5 vision (-0.1 logMAR) in at least one eye.<br />
+<em>Note</em> - ‘Normal’ vision is considered equivalent to 0.00 logMAR (or 6/6 (20/20) on the Snellen scale more commonly utilised in clinical practice).</p>
 <div id="descriptives" class="section level3">
 <h3>Descriptives</h3>
 <p>The basic frequency histogram for Left and Right eye data, constructed with ggplot2.</p>
@@ -58,6 +60,8 @@ div.output pre {
 </div>
 <p>And we end up with:</p>
 <p><img src="/figs/svfig1.png" alt="png" width="800"/></p>
+<p><br></p>
+<p>About <strong>42%</strong> of patients had SuperHuman vision under this definition.</p>
 <p><br><br></p>
 </div>
 <div id="classical-modelling-logistic-regression" class="section level3">
