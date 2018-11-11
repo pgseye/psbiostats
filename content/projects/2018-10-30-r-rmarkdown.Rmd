@@ -45,17 +45,39 @@ We wanted to model the relationship between various environmental, lifestyle, ma
 
 A secondary aim was to compare the predictive power of a classical modelling method (logistic regression) with a machine learning technique (penalised regression). An excellent overview of the differences can be found in this [Nature](https://www.nature.com/articles/nmeth.4642) paper.  
 
-SuperHuman vision was defined as BCVA better than or equal to 6/5 vision (-0.1 logMAR) in at least one eye.  
+SuperHuman vision was defined as BCVA better than or equal to 6/4.8 vision (-0.1 logMAR) in at least one eye.  
 *Note* - ‘Normal’ vision is considered equivalent to 0.00 logMAR (or 6/6 (20/20) on the Snellen scale more commonly utilised in clinical practice).  
 
 
 ### Descriptives
 
-The basic frequency histogram for Left and Right eye data, constructed with ggplot2.
+First, we'll load the packages required for this project.
+
+<div class = "code">
+```{r packages, eval=F, tidy=F}
+library(readxl) # read excel files
+library(dplyr) # get data into shape
+library(ggplot2) # plots
+library(emmeans) # post-hoc model contrasts
+library(missForest) # random forest imputation of missing data
+library(glmnet) # penalised regression
+library(flextable) # table output for Word
+```
+</div>
+
+BCVA is currently continuous - we need to dichotomise it into 'Normal' - coded as 0, and 'SuperHuman' - coded as 1, vision categories.
+
+<div class = "code">
+```{r bcva_cat, eval=F, tidy=F}
+dat$bcva_cat <- ifelse(dat$bcva_r <= -0.1 | dat$bcva_l <= -0.1, 1, 0)
+```
+</div>
+
+Let's do some basic plotting. The frequency histogram for Left and Right eye data, constructed with ggplot2:
 
 <div class = "code">
 ```{r hist, eval=F, tidy=F}
-hist_va <-ggplot(data, aes(x = bcva, fill = bcva < -0.1)) +
+hist_va <-ggplot(dat, aes(x = bcva, fill = bcva < -0.1)) +
   geom_histogram(color = "black",  binwidth = 0.05, center = 0.025) +
   scale_x_continuous(limits = c(-0.4, 0.4), breaks = seq(-0.4, 0.4, 0.1)) +
   theme(legend.position = "none") +
@@ -67,12 +89,12 @@ hist_va <-ggplot(data, aes(x = bcva, fill = bcva < -0.1)) +
 </div>
 
 
-Then overlaying the classification thresholds for SuperHuman vision.
+Then overlaying the classification thresholds for SuperHuman vision:
 
 <div class = "code">
 ```{r hist2, eval=F}
 hist_va + 
-  geom_vline(data = data, aes(xintercept = -0.097, color = "red"), linetype = "dashed") +
+  geom_vline(data = dat, aes(xintercept = -0.097, color = "red"), linetype = "dashed") +
   geom_text(aes(-0.25, 420, label = "Superhuman Vision", color = "red"))
 ```
 </div>
@@ -86,11 +108,75 @@ And we end up with:
 About **42%** of patients had SuperHuman vision under this definition.  
 
 
-
-<br><br>
-
 ### Classical Modelling (Logistic Regression)
 
+As the dependent (response or outcome) variable in this case is dichotomous (present/absent, yes/no, SuperHuman vision/Normal vision, 1/0), we will use [logistic regression](https://onlinecourses.science.psu.edu/stat504/node/149/) to find the best fitting (yet biologically plausible) model to describe the relationship between vision and the set of independent (predictor or explanatory) variables. This model predicts a logit transformation of the probability of a patient having SuperHuman vision.  
+
+Potential predictor variables were tested individually and then in a multivariable model and were initially selected based on biological plausibility of association. The final best-fitting model was: 
+
+<div class = "code">
+```{r log_mod, eval=F}
+summary(classical_mod <- glm(bcva_cat ~ age + sex + sph + cyl + sum_out + head_circum_age0, data = dat, family = binomial))
+```
+</div>
+
+and the output:
+
+<div class = "output">
+```{r log_mod_out, eval=F}
+Call:
+glm(formula = bcva_cat ~ age + sex + sph + cyl + sum_out + head_circum_age0, 
+    family = binomial, data = dat)
+
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-1.5666  -1.0165  -0.6196   1.1182   2.5297  
+
+Coefficients:
+                                   Estimate Std. Error z value Pr(>|z|)    
+(Intercept)                         0.02381    3.53640   0.007  0.99463    
+age                                -0.19074    0.15896  -1.200  0.23018    
+sexM                                0.71379    0.14010   5.095 3.49e-07 ***
+sph                                 0.14556    0.05496   2.649  0.00808 ** 
+cyl                                 1.74377    0.25573   6.819 9.18e-12 ***
+sum_outLess than 1/4 of the day     1.29889    0.57195   2.271  0.02315 *  
+sum_out1/2 of the day               1.36243    0.57260   2.379  0.01734 *  
+sum_outGreater than 3/4 of the day  1.10808    0.59977   1.848  0.06467 .  
+sum_outCannot judge                 0.55005    0.60266   0.913  0.36140    
+head_circum_age0                    0.07685    0.03884   1.979  0.04787 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 1377.7  on 1013  degrees of freedom
+Residual deviance: 1247.6  on 1004  degrees of freedom
+  (238 observations deleted due to missingness)
+AIC: 1267.6
+
+Number of Fisher Scoring iterations: 5
+```
+</div>
+
+As always, raw output is not very presentable, so let's try and do some formatting.
+
+
+
+<div class = "code">
+```{r log_mod_format, eval=F}
+# C.I.'s
+cc <- coef(summary(classical_mod))
+cc <- cc[,-3]
+ci <- confint(classical_mod)
+citab <- cbind(as.data.frame(cc), as.data.frame(ci))
+rownames(citab) <- c("Intercept", "Age", "Sex", "Refraction - Sphere", "Refraction - Cylinder", "Time spent outdoors - less than 1/4 day", "Time spent outdoors - 1/2 day", "Time spent outdoors - more than 3/4 day", "Time spent outdoors - cannot judge", "Head circumference at birth")
+citab_classical_mod <- cbind("Coefficient" = rownames(citab), citab[,1:2], "Coefficient Lower C.I." = citab[,4], "Coefficient Upper C.I." = citab[,5], "Odds Ratio" = exp(citab[,1]), "Odds Ratio lower C.I." = exp(citab[,4]), "Odds Ratio upper C.I." = exp(citab[,5]), "P-value" = citab[,3])
+
+# Make table
+(table <- regulartable(citab_classical_mod) %>%
+  set_formatter_type(fmt_double = "%0.3f"))
+```
+</div>
 
 
 <br><br>
