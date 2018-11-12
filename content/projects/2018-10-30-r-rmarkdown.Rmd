@@ -2,7 +2,7 @@
 title: "Predictors of SuperHuman Vision"
 author: "Paul Sanfilippo"
 date: 2018-10-30T21:13:14-05:00
-description: "Under construction..."
+description: "I contrasted classical statistical and machine learning approaches in identifying predictors for high-level vision in young adults."
 categories: ["R"]
 tags: ["regression", "plot"]
 featured: true
