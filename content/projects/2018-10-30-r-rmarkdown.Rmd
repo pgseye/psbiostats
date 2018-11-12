@@ -444,7 +444,7 @@ The accuracy of LASSO in correctly predicting vision status is about **68%**.
 Let's repeat this same process, using the *same* train/test split of the data, with the classical model.
 
 <div class = "code">
-```{r glm_pred, eval=F, tidy=F}
+```{r glm_pred, eval=F, tidy=T}
 set.seed(1234)
 training.samples2 <- dat$bcva_cat %>%
   createDataPartition(p = 0.75, list = FALSE)
@@ -504,8 +504,8 @@ myCoefs <- coef(cv, s = "lambda.min");
 myCoefs[which(myCoefs != 0 ) ] 
 myCoefs@Dimnames[[1]][which(myCoefs != 0 ) ]
 myResults <- data.frame(
-  features = myCoefs@Dimnames[[1]][ which(myCoefs != 0 ) ], #intercept included
-  coefs    = myCoefs              [ which(myCoefs != 0 ) ]  #intercept included
+  features = myCoefs@Dimnames[[1]][ which(myCoefs != 0 ) ],
+  coefs    = myCoefs              [ which(myCoefs != 0 ) ]
 )
 myResults
 ```

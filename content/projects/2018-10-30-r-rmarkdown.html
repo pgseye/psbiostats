@@ -311,13 +311,13 @@ pred &lt;- data.frame(pred)</code></pre>
 <p>Let’s repeat this same process, using the <em>same</em> train/test split of the data, with the classical model.</p>
 <div class="code">
 <pre class="r"><code>set.seed(1234)
-training.samples2 &lt;- dat$bcva_cat %&gt;%
-  createDataPartition(p = 0.75, list = FALSE)
-train.data2  &lt;- data.frame(dat[training.samples2, ])
+training.samples2 &lt;- dat$bcva_cat %&gt;% createDataPartition(p = 0.75, list = FALSE)
+train.data2 &lt;- data.frame(dat[training.samples2, ])
 test.data2 &lt;- data.frame(dat[-training.samples2, ])
 
-glm.train &lt;- glm(bcva_cat ~ age + sex + sph + cyl + sum_out + head_circum_age0, data = train.data2, family = binomial)
-glm.pred &lt;- predict(glm.train, newdata = test.data2, type=&#39;response&#39;)
+glm.train &lt;- glm(bcva_cat ~ age + sex + sph + cyl + sum_out + head_circum_age0, 
+    data = train.data2, family = binomial)
+glm.pred &lt;- predict(glm.train, newdata = test.data2, type = &quot;response&quot;)
 glm.class &lt;- factor(ifelse(glm.pred &gt; 0.5, 1, 0))
 y3 &lt;- factor(test.data2$bcva_cat)
 
@@ -359,8 +359,8 @@ confusionMatrix(glm.class, y3, positive = &quot;1&quot;)</code></pre>
 myCoefs[which(myCoefs != 0 ) ] 
 myCoefs@Dimnames[[1]][which(myCoefs != 0 ) ]
 myResults &lt;- data.frame(
-  features = myCoefs@Dimnames[[1]][ which(myCoefs != 0 ) ], #intercept included
-  coefs    = myCoefs              [ which(myCoefs != 0 ) ]  #intercept included
+  features = myCoefs@Dimnames[[1]][ which(myCoefs != 0 ) ],
+  coefs    = myCoefs              [ which(myCoefs != 0 ) ]
 )
 myResults</code></pre>
 </div>
