@@ -47,7 +47,7 @@ knitr::opts_chunk$set(collapse = F)
 
 <br>
 
-We wanted to model the relationship between various environmental, lifestyle, maternal, childhood and ophthalmic factors and best-corrected [visual acuity](https://en.wikipedia.org/wiki/Visual_acuity) (BCVA) in a young adult cohort. Data were available for 1252 patients.  
+I wanted to model the relationship between various environmental, lifestyle, maternal, childhood and ophthalmic factors and best-corrected [visual acuity](https://en.wikipedia.org/wiki/Visual_acuity) (BCVA) in a young adult cohort. Data were available for 1252 patients.  
 
 A secondary aim was to compare the predictive power of a classical modelling method (logistic regression) with a machine learning technique (penalised regression). An excellent overview of the differences can be found in this [Nature](https://www.nature.com/articles/nmeth.4642) paper.  
 
@@ -117,7 +117,7 @@ About **42%** of patients had SuperHuman vision under this definition.
 
 ### Classical Modelling (Logistic Regression)
 
-As the dependent (response or outcome) variable in this case is dichotomous (present/absent, yes/no, SuperHuman vision/Normal vision, 1/0), we will use [logistic regression](https://onlinecourses.science.psu.edu/stat504/node/149/) to find the best fitting (yet biologically plausible) model to describe the relationship between vision and the set of independent (predictor or explanatory) variables. This model predicts a logit transformation of the probability of a patient having SuperHuman vision.  
+As the dependent (response or outcome) variable in this case is dichotomous (present/absent, yes/no, SuperHuman vision/Normal vision, 1/0), we will use [logistic regression](https://onlinecourses.science.psu.edu/stat504/node/149/) to find the best fitting (yet biologically plausible) model to describe the relationship between vision and the set of independent (predictor or explanatory) variables. This model predicts a logit (log-odds) transformation of the probability of a patient having SuperHuman vision.  
 
 Potential predictor variables were tested individually and then in a multivariable model, and were initially selected based on biological plausibility of association. The final best-fitting model was: 
 
@@ -202,7 +202,6 @@ Then create the table as a Word document.
 ```{r log_mod_table, eval=F}
 table <- regulartable(citab_classical_mod) %>%
   set_formatter_type(fmt_double = "%0.3f")
-table <- width(table, width = 1.6)
 theme_vanilla(table)
 
 doc <- read_docx() %>%
@@ -211,17 +210,85 @@ print(doc, target = ".../table.docx") %>% invisible()
 ```
 </div>
 
-And here is the more nicely formatted table:
+And here are the more nicely formatted results:
 
 <img src="/figs/class_table.png" alt="png" width="800"/>
 
+So it seems that being male, having low refractive error (spherical and cylindrical), spending more time outdoors, and having a larger head circumference at birth are all associated with higher odds of having SuperHuman vision.
 
+Often, visualisation of the results in the form of a plot is better for understanding and interpretation of effects than simply looking at a table of numbers. Here, we can do this by calculating the estimated marginal means (predicted means) of the log-odds of SuperHuman vision for set combinations of the predictor variables. The response can be converted to a predicted probability of SuperHuman vision which is more helpful in understanding predictor effects.  
 
+Let's do this just for the ```Time spent outdoors``` variable.  
 
+Calculate the estimated marginal means and convert to predicted probabilities:
 
+<div class = "code">
+```{r emm1, eval=F}
+classical_mod_em <- emmeans(classical_mod, ~ sex + sum_out, type = "response")
+```
+</div>
 
+<div class = "output">
+```{r emm1_out, eval=F}
+## sex sum_out                          prob         SE  df  asymp.LCL asymp.UCL
+##  F   None                        0.1222504 0.06094369 Inf 0.04375343 0.2977293
+##  M   None                        0.2214053 0.09738331 Inf 0.08590336 0.4625012
+##  F   Less than 1/4 of the day    0.3379598 0.02877234 Inf 0.28405372 0.3964314
+##  M   Less than 1/4 of the day    0.5103474 0.03199022 Inf 0.44781308 0.5725595
+##  F   1/2 of the day              0.3523200 0.03007300 Inf 0.29584587 0.4132477
+##  M   1/2 of the day              0.5262103 0.03312537 Inf 0.46120907 0.5903352
+##  F   Greater than 3/4 of the day 0.2966699 0.04761187 Inf 0.21241392 0.3974800
+##  M   Greater than 3/4 of the day 0.4627165 0.05439053 Inf 0.35934466 0.5693958
+##  F   Cannot judge                0.1944667 0.03628163 Inf 0.13294211 0.2754198
+##  M   Cannot judge                0.3301627 0.05083482 Inf 0.23903685 0.4361182
+## 
+## Confidence level used: 0.95 
+## Intervals are back-transformed from the logit scale 
+```
+</div>
 
-<br><br>
+But I don't really want to show the 'Cannot judge' category, as I don't think it contributes much to the explanation, so let's exclude that category:
+
+<div class = "code">
+```{r emm2, eval=F}
+classical_mod_rg <- ref_grid(classical_mod, 
+                             at = list(sum_out = c(
+                               "None", 
+                               "Less than 1/4 of the day", 
+                               "1/2 of the day", 
+                               "Greater than 3/4 of the day")), 
+                             type = "response") 
+classical_mod_em <- emmeans(classical_mod_rg, ~ sex + sum_out, type = "response")
+classical_mod_df <- data.frame(classical_mod_em)
+```
+</div>
+
+Now, let's plot that (showing the 95% confidence bands):
+
+<div class = "code">
+```{r pred_plot1, eval=F, tidy=F}
+ggplot(classical_mod_df, aes(y = prob, x = sum_out, colour = sex, group = sex)) +
+  scale_color_manual(name="Sex", labels=c("Female", "Male"), values=c("#c90120", "#0371b1")) +
+  scale_fill_manual(name="Sex", labels=c("Female", "Male"), values=c("#c90120", "#0371b1")) +
+  geom_ribbon(aes(ymin = asymp.LCL, ymax = asymp.UCL, fill = sex), linetype = 0, alpha = 0.4) +
+  geom_point(size = 1) + 
+  geom_line() +
+  xlab("Time Spent Outdoors During Summer") +
+  ylab("Predicted Probability of Superhuman Vision") +
+  coord_cartesian(ylim=c(0, 1)) +
+  scale_y_continuous(breaks=seq(0, 1, 0.1)) +
+  theme_light(base_size = 16) +
+  theme(legend.position=c(0.93,0.885)) +
+  theme(axis.title.x = element_text(margin = margin(t = 15, r = 0, b = 0, l = 0))) +
+  ggtitle("Predicted probability of superhuman vision as a function of sex and time spent 
+          outdoors during summer")
+```
+</div>
+
+<img src="/figs/pred_sumout.png" alt="png" width="800"/>
+
+Let's contrast this with a penalised regression approach.
+
 
 ### Machine Learning (Penalised Regression)
 
