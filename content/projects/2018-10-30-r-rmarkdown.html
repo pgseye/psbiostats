@@ -36,13 +36,13 @@ div.output pre {
 }
 </style>
 <p><br></p>
-<p>I wanted to model the relationship between various environmental, lifestyle, maternal, childhood and ophthalmic factors and best-corrected <a href="https://en.wikipedia.org/wiki/Visual_acuity">visual acuity</a> (BCVA) in a young adult cohort. Data were available for 1252 patients.</p>
+<p>I wanted to model the relationship between various environmental, lifestyle, maternal, childhood and ophthalmic factors and best-corrected <a href="https://en.wikipedia.org/wiki/Visual_acuity">visual acuity</a> (BCVA) in a young adult cohort. Data were available for 1252 patients and included 47 potential predictor variables.</p>
 <p>A secondary aim was to compare the predictive power of a classical modelling method (logistic regression) with a machine learning technique (penalised regression). An excellent overview of the differences can be found in this <a href="https://www.nature.com/articles/nmeth.4642">Nature</a> paper.</p>
 <p>SuperHuman vision was defined as BCVA better than or equal to 6/4.8 vision (-0.1 logMAR) in at least one eye.<br />
 <em>Note</em> - ‘Normal’ vision is considered equivalent to 0.00 logMAR (or 6/6 (20/20) on the Snellen scale more commonly utilised in clinical practice).</p>
 <div id="descriptives" class="section level3">
 <h3>Descriptives</h3>
-<p>First, we’ll load the packages required for this project.</p>
+<p>First, we’ll load the <strong>R</strong> packages required for this project.</p>
 <div class="code">
 <pre class="r"><code>library(readxl) # read excel files
 library(dplyr) # get data into shape
@@ -76,13 +76,12 @@ library(flextable) # table output for Word</code></pre>
 </div>
 <p>And we end up with:</p>
 <p><img src="/figs/svfig1.png" alt="png" width="800"/></p>
-<p><br></p>
 <p>About <strong>42%</strong> of patients had SuperHuman vision under this definition.</p>
 </div>
 <div id="classical-modelling-logistic-regression" class="section level3">
 <h3>Classical Modelling (Logistic Regression)</h3>
 <p>As the dependent (response or outcome) variable in this case is dichotomous (present/absent, yes/no, SuperHuman vision/Normal vision, 1/0), we will use <a href="https://onlinecourses.science.psu.edu/stat504/node/149/">logistic regression</a> to find the best fitting (yet biologically plausible) model to describe the relationship between vision and the set of independent (predictor or explanatory) variables. This model predicts a logit (log-odds) transformation of the probability of a patient having SuperHuman vision.</p>
-<p>Potential predictor variables were tested individually and then in a multivariable model, and were initially selected based on biological plausibility of association. The final best-fitting model was:</p>
+<p>Potential predictor variables were tested individually and then in a multivariable model, and were initially selected based on biological plausibility of association (purposeful selection). The final best-fitting model is based on 1014 patients with complete data:</p>
 <div class="code">
 <pre class="r"><code>summary(classical_mod &lt;- glm(bcva_cat ~ age + sex + sph + cyl + sum_out + head_circum_age0, 
     data = dat, family = binomial))</code></pre>
@@ -121,32 +120,34 @@ library(flextable) # table output for Word</code></pre>
 ## 
 ## Number of Fisher Scoring iterations: 5</code></pre>
 </div>
-<p>As always, raw output is not very presentable, so let’s try and do some formatting using the flextable package. First, manually assemble the dataframe after generating the 95% confidence intervals (C.I.’s).</p>
+<p>As always, raw output is not very presentable, so let’s try and do some formatting using the <strong>flextable</strong> package. First, manually assemble the dataframe after generating the 95% confidence intervals (C.I.’s).</p>
 <div class="code">
 <pre class="r"><code>cc &lt;- coef(summary(classical_mod))
 cc &lt;- cc[,-3]
 ci &lt;- confint(classical_mod)
 citab &lt;- cbind(as.data.frame(cc), as.data.frame(ci))
 
-rownames(citab) &lt;- c(&quot;Intercept&quot;, 
-                     &quot;Age&quot;, 
-                     &quot;Sex&quot;, 
-                     &quot;Refraction - Sphere&quot;, 
-                     &quot;Refraction - Cylinder&quot;, 
-                     &quot;Time spent outdoors - less than 1/4 day&quot;, 
-                     &quot;Time spent outdoors - 1/2 day&quot;, 
-                     &quot;Time spent outdoors - more than 3/4 day&quot;, 
-                     &quot;Time spent outdoors - cannot judge&quot;, 
-                     &quot;Head circumference at birth&quot;)
+rownames(citab) &lt;- c(
+  &quot;Intercept&quot;, 
+  &quot;Age&quot;, 
+  &quot;Sex&quot;, 
+  &quot;Refraction - Sphere&quot;, 
+  &quot;Refraction - Cylinder&quot;, 
+  &quot;Time spent outdoors - less than 1/4 day&quot;, 
+  &quot;Time spent outdoors - 1/2 day&quot;, 
+  &quot;Time spent outdoors - more than 3/4 day&quot;, 
+  &quot;Time spent outdoors - cannot judge&quot;, 
+  &quot;Head circumference at birth&quot;)
 
-citab_classical_mod &lt;- cbind(&quot;Variable&quot; = rownames(citab), 
-                             citab[,1:2], 
-                             &quot;Estimate Lower C.I.&quot; = citab[,4], 
-                             &quot;Estimate Upper C.I.&quot; = citab[,5], 
-                             &quot;Odds Ratio&quot; = exp(citab[,1]), 
-                             &quot;Odds Ratio lower C.I.&quot; = exp(citab[,4]), 
-                             &quot;Odds Ratio upper C.I.&quot; = exp(citab[,5]), 
-                             &quot;P-value&quot; = citab[,3])</code></pre>
+citab_classical_mod &lt;- cbind(
+  &quot;Variable&quot; = rownames(citab), 
+  citab[,1:2], 
+  &quot;Estimate Lower C.I.&quot; = citab[,4], 
+  &quot;Estimate Upper C.I.&quot; = citab[,5], 
+  &quot;Odds Ratio&quot; = exp(citab[,1]), 
+  &quot;Odds Ratio lower C.I.&quot; = exp(citab[,4]), 
+  &quot;Odds Ratio upper C.I.&quot; = exp(citab[,5]), 
+  &quot;P-value&quot; = citab[,3])</code></pre>
 </div>
 <p>Then create the table as a Word document.</p>
 <div class="code">
@@ -160,7 +161,7 @@ print(doc, target = &quot;.../table.docx&quot;) %&gt;% invisible()</code></pre>
 </div>
 <p>And here are the more nicely formatted results:</p>
 <p><img src="/figs/class_table.png" alt="png" width="800"/></p>
-<p>So it seems that being male, having low refractive error (spherical and cylindrical), spending more time outdoors, and having a larger head circumference at birth are all associated with higher odds of having SuperHuman vision.</p>
+<p><strong>So it seems that being male, having low refractive error (spherical and cylindrical), spending more time outdoors, and having a larger head circumference at birth are all associated with higher odds of having SuperHuman vision.</strong></p>
 <p>Often, visualisation of the results in the form of a plot is better for understanding and interpretation of effects than simply looking at a table of numbers. Here, we can do this by calculating the estimated marginal means (predicted means) of the log-odds of SuperHuman vision for set combinations of the predictor variables. The response can be converted to a predicted probability of SuperHuman vision which is more helpful in understanding predictor effects.</p>
 <p>Let’s do this just for the <code>Time spent outdoors</code> variable.</p>
 <p>Calculate the estimated marginal means and convert to predicted probabilities:</p>
@@ -186,12 +187,8 @@ print(doc, target = &quot;.../table.docx&quot;) %&gt;% invisible()</code></pre>
 <p>But I don’t really want to show the ‘Cannot judge’ category, as I don’t think it contributes much to the explanation, so let’s exclude that category:</p>
 <div class="code">
 <pre class="r"><code>classical_mod_rg &lt;- ref_grid(classical_mod, 
-                             at = list(sum_out = c(
-                               &quot;None&quot;, 
-                               &quot;Less than 1/4 of the day&quot;, 
-                               &quot;1/2 of the day&quot;, 
-                               &quot;Greater than 3/4 of the day&quot;)), 
-                             type = &quot;response&quot;) 
+  at = list(sum_out = c(&quot;None&quot;, &quot;Less than 1/4 of the day&quot;, &quot;1/2 of the day&quot;, 
+                        &quot;Greater than 3/4 of the day&quot;)), type = &quot;response&quot;) 
 classical_mod_em &lt;- emmeans(classical_mod_rg, ~ sex + sum_out, type = &quot;response&quot;)
 classical_mod_df &lt;- data.frame(classical_mod_em)</code></pre>
 </div>
@@ -218,4 +215,167 @@ classical_mod_df &lt;- data.frame(classical_mod_em)</code></pre>
 </div>
 <div id="machine-learning-penalised-regression" class="section level3">
 <h3>Machine Learning (Penalised Regression)</h3>
+<p>Penalised estimation methods operate in a similar way to ordinary least squares regression by minimising the residual sum squares (RSS). However, a penalty (or constraint) is placed on the size of the regression coefficients causing them to shrink toward zero. Therefore, penalised regression methods are also known as shrinkage or regularisation methods. If the shrinkage becomes sufficiently large, some regression coefficients are set to zero exactly - so penalised regression methods enable simultaneous coefficient estimation and variable selection. The two most familiar techniques for shrinking the regression coefficients towards zero are <a href="https://en.wikipedia.org/wiki/Tikhonov_regularization">ridge regression</a> and the <a href="https://en.wikipedia.org/wiki/Lasso_(statistics)">LASSO</a>. In practice, the main distinction between ridge and LASSO is that the former will retain all predictors in the model, whereas the latter will force some estimates to be exactly zero, concomitantly performing variable selection.</p>
+<p><strong>So, how does the LASSO compare to the classical model in terms of predictive power and the set of predictor variables selected in the model?</strong></p>
+<p>Well, in order to implement the LASSO for this project, additional steps were required to prepare the dataset for analysis. The main statistical challenge to arise was how to deal with the issue of missing data. While purposeful selection in classical regression requires manual input based in part on domain expertise, the penalised methods simply demand ‘equal opportunity’ access to all available predictors in the dataset. Although the majority of variables did not have significant missing data (&gt; 20%), given the large number of potential predictors the pattern of missing data was such that <a href="https://en.wikipedia.org/wiki/Listwise_deletion">listwise deletion</a> would have removed almost all the available information. For this reason, missing values are imputed using an iterative imputation method based on a random forest algorithm.</p>
+<p>Perform imputation of missing data using the <strong>missForest</strong> package:</p>
+<div class="code">
+<pre class="r"><code>set.seed(1234)
+mldat_est &lt;- missForest(dat, verbose = TRUE)
+mldat_imp &lt;- mldat_est$ximp</code></pre>
+</div>
+<p>An estimate of the imputation performance (error) is provided as an ‘out-of-bag’ (OOB) error estimate of random forest. For continuous variables, imputation error is calculated as the normalised root mean square error (NRMSE), and for categorical variables, as an estimate of the proportion of falsely classified (PFC) events. Here, 9 iterations are required, producing OOB error estimates of 0.095 and 28.5%.</p>
+<div class="output">
+<pre class="r"><code>##      NRMSE        PFC 
+## 0.09488661 0.28453554 </code></pre>
+</div>
+<p>The next data preparation step involves the conversion of all categorical predictors to numeric variables as the <strong>glmnet</strong> package for penalised regression requires a design matrix as input. This may be done by using the <em>model.matrix</em> function in base R to expand all factors in the dataset to K-1 dummy variables (assuming a given factor had k levels).</p>
+<div class="code">
+<pre class="r"><code>mod_mat &lt;- model.matrix.lm(~ethnicity + sex + edu_lev + yr_comp + ftstudy + 
+    tv_hrs + egames_hrs + comp_work_hrs + comp_games_hrs + comp_social_hrs + 
+    comp_surf_hrs + sum_out + mob_phone + no_texts + freq_alc, data = mldat_imp)
+mod_mat &lt;- data.frame(mod_mat)</code></pre>
+</div>
+<p>Now for the fun part. We’ll randomly split the dataset into ‘training’ (75%) and ‘test’ (25%) sets using the <em>createDataPartition</em> function of the <strong>caret</strong> package. Creating a train/test split of the dataset provides an effective method for evaluating the performance of a predictive model. The training set is used to prepare the model and inform its decision process, while the test dataset applies that information in making predictions against the unseen test data. The performance of the model is determined by the accuracy with which the predictions match the unseen outcome values.</p>
+<div class="code">
+<pre class="r"><code>set.seed(1234)
+training.samples &lt;- mldat_imp1$bcva_cat %&gt;%
+  createDataPartition(p = 0.75, list = FALSE)
+train.data  &lt;- mldat_imp1[training.samples, ]
+test.data &lt;- mldat_imp1[-training.samples, ]</code></pre>
+</div>
+<p>The <strong>glmnet</strong> algorithms use a convergence method based on cyclical coordinate descent, successively optimising the objective function over each parameter with others fixed, until the minimum of the function is found. The <em>cv.glmnet</em> function is used to perform 10(K)-fold cross-validation (CV) for optimising and selecting the tuning parameter λ, and simultaneously fit the model to the training set data. In this context, the CV procedure split the training data into 10 (K) groups of equal size, with the model being fit to 9 (K – 1) groups and the tuning parameter prediction error estimated from the ‘left-out’ group. The process is repeated 10 (K) times selecting the value for the tuning parameter with the smallest prediction error (λ min).</p>
+<p>First, identify the predictor (x) and outcome (y) variables of the training data:</p>
+<div class="code">
+<pre class="r"><code>x &lt;- model.matrix(factor(bcva_cat) ~ ., train.data)[,-1]
+y &lt;- factor(train.data$bcva_cat)</code></pre>
+</div>
+<p>As the outcome variable was binary (Normal vision = 0, SuperHuman vision = 1), we fit the LASSO using a logit link function as per the standard GLM, with coefficient estimates returned on the log-odds scale. The alpha value is set to 1 for LASSO (vs 0 for ridge).</p>
+<div class="code">
+<pre class="r"><code>cv &lt;- cv.glmnet(x, y, alpha = 1, family = &quot;binomial&quot;, type.measure = &quot;class&quot;)
+lambda.min &lt;- cv$lambda.min</code></pre>
+</div>
+<p>And the optimised tuning parameter (λ min):</p>
+<div class="code">
+<pre class="r"><code>lambda.min</code></pre>
+</div>
+<div class="output">
+<pre class="r"><code>## [1] 0.1631945</code></pre>
+</div>
+<p>Now, let’s evaluate the model informed by the training data on the test data to make predictions of vision status. We’ll do this with the <em>predict.cv.glmnet</em> function. First, identify the predictor (x2) and outcome (y2) variables of the test data:</p>
+<div class="code">
+<pre class="r"><code>x2 &lt;- model.matrix(factor(bcva_cat)~., test.data)[,-1]
+y2 &lt;- factor(test.data$bcva_cat)</code></pre>
+</div>
+<p>Predict:</p>
+<div class="code">
+<pre class="r"><code>pred &lt;- predict.cv.glmnet(cv, newx = x2, s = &quot;lambda.min&quot;, type = &quot;class&quot;)
+pred &lt;- data.frame(pred)</code></pre>
+</div>
+<p>But how do we know how well the model predicts vision status from this? Well, to assess model performance a ‘confusion matrix’ is generated with the <em>confusionMatrix</em> function of the <strong>caret</strong> package. A confusion matrix summarises the classification performance of the trained model on the test data. As a two-dimensional matrix, one dimension is indexed by the predicted class of the object and the other by the true class.</p>
+<p><img src="/figs/conf_mat.png" alt="png" width="800"/></p>
+<p>Then, a broad measure of classification performance may be defined as accuracy, whereby:</p>
+<p><img src="/figs/conf_mat2.png" alt="png" width="400"/></p>
+<p>Let’s calculate the confusion matrix:</p>
+<div class="code">
+<pre class="r"><code>confusionMatrix(pred$X1, y2, positive = &quot;1&quot;)</code></pre>
+</div>
+<div class="output">
+<pre class="r"><code>## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction   0   1
+##          0 172  81
+##          1  19  41
+##                                           
+##                Accuracy : 0.681          
+##                  95% CI : (0.626, 0.732)
+##     No Information Rate : 0.6102          
+##     P-Value [Acc &gt; NIR] : 0.006       
+##                                           
+##                   Kappa : 0.261          
+##  Mcnemar&#39;s Test P-Value : 0.000       
+##                                           
+##             Sensitivity : 0.336          
+##             Specificity : 0.901          
+##          Pos Pred Value : 0.683          
+##          Neg Pred Value : 0.680         
+##              Prevalence : 0.390          
+##          Detection Rate : 0.131          
+##    Detection Prevalence : 0.192          
+##       Balanced Accuracy : 0.618          
+##                                           
+##        &#39;Positive&#39; Class : 1  </code></pre>
+</div>
+<p>The accuracy of LASSO in correctly predicting vision status is about <strong>68%</strong>.</p>
+<p>Let’s repeat this same process, using the <em>same</em> train/test split of the data, with the classical model.</p>
+<div class="code">
+<pre class="r"><code>set.seed(1234)
+training.samples2 &lt;- dat$bcva_cat %&gt;%
+  createDataPartition(p = 0.75, list = FALSE)
+train.data2  &lt;- data.frame(dat[training.samples2, ])
+test.data2 &lt;- data.frame(dat[-training.samples2, ])
+
+glm.train &lt;- glm(bcva_cat ~ age + sex + sph + cyl + sum_out + head_circum_age0, data = train.data2, family = binomial)
+glm.pred &lt;- predict(glm.train, newdata = test.data2, type=&#39;response&#39;)
+glm.class &lt;- factor(ifelse(glm.pred &gt; 0.5, 1, 0))
+y3 &lt;- factor(test.data2$bcva_cat)
+
+confusionMatrix(glm.class, y3, positive = &quot;1&quot;)</code></pre>
+</div>
+<div class="output">
+<pre class="r"><code>## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction   0   1
+##          0 111  41
+##          1  42  57
+##                                           
+##                Accuracy : 0.669          
+##                  95% CI : (0.607, 0.727)
+##     No Information Rate : 0.610          
+##     P-Value [Acc &gt; NIR] : 0.029         
+##                                           
+##                   Kappa : 0.307          
+##  Mcnemar&#39;s Test P-Value : 1.000         
+##                                           
+##             Sensitivity : 0.582          
+##             Specificity : 0.725          
+##          Pos Pred Value : 0.575          
+##          Neg Pred Value : 0.730          
+##              Prevalence : 0.390          
+##          Detection Rate : 0.227          
+##    Detection Prevalence : 0.394          
+##       Balanced Accuracy : 0.653          
+##                                           
+##        &#39;Positive&#39; Class : 1   </code></pre>
+</div>
+<p>The accuracy of the classical model in correctly predicting vision status is about <strong>67%</strong> - really not much difference in predictive performance.</p>
+<p>Let’s have a look at those two models respective confusion matrices, just to understand a little better what the numbers mean. For each model summary the frequency coloured <span style="color:red"><strong>red</strong></span> represents the number of individuals in the test set data correctly identified as having SuperHuman vision (TP), and the frequency coloured <span style="color:blue"><strong>blue</strong></span> the number of individuals correctly identified as having Normal vision (TN). <span style="color:green"><strong>Green</strong></span> cells indicate the number of individuals with SuperHuman vision incorrectly classified by the model as having Normal vision (FN). Similarly, <span style="color:orange"><strong>orange</strong></span> cells give the number of individuals with Normal vision that the model incorrectly classified as having SuperHuman vision (FP).</p>
+<p><img src="/figs/conf_mat3.png" alt="png" width="800"/></p>
+<p>The final part of this project is to look at what predictors the LASSO selected.</p>
+<div class="code">
+<pre class="r"><code>myCoefs &lt;- coef(cv, s = &quot;lambda.min&quot;);
+myCoefs[which(myCoefs != 0 ) ] 
+myCoefs@Dimnames[[1]][which(myCoefs != 0 ) ]
+myResults &lt;- data.frame(
+  features = myCoefs@Dimnames[[1]][ which(myCoefs != 0 ) ], #intercept included
+  coefs    = myCoefs              [ which(myCoefs != 0 ) ]  #intercept included
+)
+myResults</code></pre>
+</div>
+<p>We can see that most of these appear in the classical model, so it appears that both approaches have produced models based on a similar set of predictor variables.</p>
+<div class="output">
+<pre class="r"><code>##                         features         coefs
+## 1                    (Intercept) -6.033976e+00
+## 2                          sph_r  7.697420e-02
+## 3                          cyl_r  5.272135e-01
+## 4                          cyl_l -2.655846e-01
+## 5                         rnfl_r  1.028928e-02
+## 6              head_circum_birth  9.225977e-03
+## 7                           sexM  8.760413e-02
+## 8          sum_out1.2.of.the.day  1.930521e-01</code></pre>
+</div>
+<p>The identification of significant predictors for the classical regression component of this work was based on domain knowledge and purposeful selection techniques. While penalised regression methods do not explicitly choose certain variables, by virtue of the penalty applied to the coefficient estimates the algorithm passively automates predictor selection by shrinking some coefficients to zero. It was therefore of interest to contrast the commonality of the variables in the final models for the two approaches, and indeed, almost the same set of predictors were shared by both methods. The other salient finding was that the classical model had comparable predictive power to the penalised techniques. The advantage of the former being that it’s grounded in a mathematical model that facilitates inference and greater overall interpretability.</p>
+<p>The juxtaposition of classical statistical and machine learning approaches in this work was intended as an expository exercise. However, it does highlight that while not mutually exclusive in the capacity to derive similar data insights, the methods also share different objectives. For example, <a href="https://www.nature.com/articles/nmeth.4642">Bzdok et. al.</a> maintain a distinction in which inference versus prediction is the fundamental goal – statistical learning for drawing population inferences from a sample, and machine learning for finding generalisable predictive patterns. In a landmark 2001 paper, <a href="http://www2.math.uu.se/~thulin/mm/breiman.pdf">Breiman</a> advocated for the adoption of a more diverse set of tools to augment conventional data modelling. Certainly, advancements in computing technology have facilitated the recent, rapid uptake and application of machine learning methods in many areas of health science. Going forward it seems inevitable that both classical statistical and machine learning will act in complement to provide biologically meaningful conclusions in the process of scientific discovery.</p>
 </div>
