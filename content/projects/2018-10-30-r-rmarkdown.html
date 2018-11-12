@@ -7,6 +7,7 @@ categories: ["R"]
 tags: ["regression", "plot"]
 featured: true
 image: "/img/super.png"
+
 ---
 
 
@@ -14,7 +15,7 @@ image: "/img/super.png"
 <style>
 div.code pre { 
                 font-family: 'Source Code Pro', 'Courier New', monospace;
-                font-size: 12px;
+                font-size: 11px;
                 background-color:#F5F8FA;
                 padding-top: 10px;
                 padding-bottom: 10px;
@@ -26,7 +27,7 @@ div.code pre {
 <style>
 div.output pre { 
                 font-family: 'Source Code Pro', 'Courier New', monospace;
-                font-size: 12px;
+                font-size: 11px;
                 padding-top: 10px;
                 padding-bottom: 10px;
                 padding-left: 10px;
@@ -49,6 +50,7 @@ library(ggplot2) # plots
 library(emmeans) # post-hoc model contrasts
 library(missForest) # random forest imputation of missing data
 library(glmnet) # penalised regression
+library(officer) # table output for Word
 library(flextable) # table output for Word</code></pre>
 </div>
 <p>BCVA is currently continuous - we need to dichotomise it into ‘Normal’ - coded as 0, and ‘SuperHuman’ - coded as 1, vision categories.</p>
@@ -80,58 +82,85 @@ library(flextable) # table output for Word</code></pre>
 <div id="classical-modelling-logistic-regression" class="section level3">
 <h3>Classical Modelling (Logistic Regression)</h3>
 <p>As the dependent (response or outcome) variable in this case is dichotomous (present/absent, yes/no, SuperHuman vision/Normal vision, 1/0), we will use <a href="https://onlinecourses.science.psu.edu/stat504/node/149/">logistic regression</a> to find the best fitting (yet biologically plausible) model to describe the relationship between vision and the set of independent (predictor or explanatory) variables. This model predicts a logit transformation of the probability of a patient having SuperHuman vision.</p>
-<p>Potential predictor variables were tested individually and then in a multivariable model and were initially selected based on biological plausibility of association. The final best-fitting model was:</p>
+<p>Potential predictor variables were tested individually and then in a multivariable model, and were initially selected based on biological plausibility of association. The final best-fitting model was:</p>
 <div class="code">
-<pre class="r"><code>summary(classical_mod &lt;- glm(bcva_cat ~ age + sex + sph + cyl + sum_out + head_circum_age0, data = dat, family = binomial))</code></pre>
+<pre class="r"><code>summary(classical_mod &lt;- glm(bcva_cat ~ age + sex + sph + cyl + sum_out + head_circum_age0, 
+    data = dat, family = binomial))</code></pre>
 </div>
 <p>and the output:</p>
 <div class="output">
-<pre class="r"><code>Call:
-glm(formula = bcva_cat ~ age + sex + sph + cyl + sum_out + head_circum_age0, 
-    family = binomial, data = dat)
-
-Deviance Residuals: 
-    Min       1Q   Median       3Q      Max  
--1.5666  -1.0165  -0.6196   1.1182   2.5297  
-
-Coefficients:
-                                   Estimate Std. Error z value Pr(&gt;|z|)    
-(Intercept)                         0.02381    3.53640   0.007  0.99463    
-age                                -0.19074    0.15896  -1.200  0.23018    
-sexM                                0.71379    0.14010   5.095 3.49e-07 ***
-sph                                 0.14556    0.05496   2.649  0.00808 ** 
-cyl                                 1.74377    0.25573   6.819 9.18e-12 ***
-sum_outLess than 1/4 of the day     1.29889    0.57195   2.271  0.02315 *  
-sum_out1/2 of the day               1.36243    0.57260   2.379  0.01734 *  
-sum_outGreater than 3/4 of the day  1.10808    0.59977   1.848  0.06467 .  
-sum_outCannot judge                 0.55005    0.60266   0.913  0.36140    
-head_circum_age0                    0.07685    0.03884   1.979  0.04787 *  
----
-Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-
-(Dispersion parameter for binomial family taken to be 1)
-
-    Null deviance: 1377.7  on 1013  degrees of freedom
-Residual deviance: 1247.6  on 1004  degrees of freedom
-  (238 observations deleted due to missingness)
-AIC: 1267.6
-
-Number of Fisher Scoring iterations: 5</code></pre>
+<pre class="r"><code>## Call:
+## glm(formula = bcva_cat ~ age + sex + sph + cyl + sum_out + head_circum_age0, 
+##     family = binomial, data = dat)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.5666  -1.0165  -0.6196   1.1182   2.5297  
+## 
+## Coefficients:
+##                                    Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)                         0.02381    3.53640   0.007  0.99463    
+## age                                -0.19074    0.15896  -1.200  0.23018    
+## sexM                                0.71379    0.14010   5.095 3.49e-07 ***
+## sph                                 0.14556    0.05496   2.649  0.00808 ** 
+## cyl                                 1.74377    0.25573   6.819 9.18e-12 ***
+## sum_outLess than 1/4 of the day     1.29889    0.57195   2.271  0.02315 *  
+## sum_out1/2 of the day               1.36243    0.57260   2.379  0.01734 *  
+## sum_outGreater than 3/4 of the day  1.10808    0.59977   1.848  0.06467 .  
+## sum_outCannot judge                 0.55005    0.60266   0.913  0.36140    
+## head_circum_age0                    0.07685    0.03884   1.979  0.04787 *  
+## ---
+## Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 1377.7  on 1013  degrees of freedom
+## Residual deviance: 1247.6  on 1004  degrees of freedom
+##   (238 observations deleted due to missingness)
+## AIC: 1267.6
+## 
+## Number of Fisher Scoring iterations: 5</code></pre>
 </div>
-<p>As always, raw output is not very presentable, so let’s try and do some formatting.</p>
+<p>As always, raw output is not very presentable, so let’s try and do some formatting using the flextable package. First, manually assemble the dataframe after generating the 95% confidence intervals (C.I.’s).</p>
 <div class="code">
-<pre class="r"><code># C.I.&#39;s
-cc &lt;- coef(summary(classical_mod))
+<pre class="r"><code>cc &lt;- coef(summary(classical_mod))
 cc &lt;- cc[,-3]
 ci &lt;- confint(classical_mod)
 citab &lt;- cbind(as.data.frame(cc), as.data.frame(ci))
-rownames(citab) &lt;- c(&quot;Intercept&quot;, &quot;Age&quot;, &quot;Sex&quot;, &quot;Refraction - Sphere&quot;, &quot;Refraction - Cylinder&quot;, &quot;Time spent outdoors - less than 1/4 day&quot;, &quot;Time spent outdoors - 1/2 day&quot;, &quot;Time spent outdoors - more than 3/4 day&quot;, &quot;Time spent outdoors - cannot judge&quot;, &quot;Head circumference at birth&quot;)
-citab_classical_mod &lt;- cbind(&quot;Coefficient&quot; = rownames(citab), citab[,1:2], &quot;Coefficient Lower C.I.&quot; = citab[,4], &quot;Coefficient Upper C.I.&quot; = citab[,5], &quot;Odds Ratio&quot; = exp(citab[,1]), &quot;Odds Ratio lower C.I.&quot; = exp(citab[,4]), &quot;Odds Ratio upper C.I.&quot; = exp(citab[,5]), &quot;P-value&quot; = citab[,3])
 
-# Make table
-(table &lt;- regulartable(citab_classical_mod) %&gt;%
-  set_formatter_type(fmt_double = &quot;%0.3f&quot;))</code></pre>
+rownames(citab) &lt;- c(&quot;Intercept&quot;, 
+                     &quot;Age&quot;, 
+                     &quot;Sex&quot;, 
+                     &quot;Refraction - Sphere&quot;, 
+                     &quot;Refraction - Cylinder&quot;, 
+                     &quot;Time spent outdoors - less than 1/4 day&quot;, 
+                     &quot;Time spent outdoors - 1/2 day&quot;, 
+                     &quot;Time spent outdoors - more than 3/4 day&quot;, 
+                     &quot;Time spent outdoors - cannot judge&quot;, 
+                     &quot;Head circumference at birth&quot;)
+
+citab_classical_mod &lt;- cbind(&quot;Variable&quot; = rownames(citab), 
+                             citab[,1:2], 
+                             &quot;Estimate Lower C.I.&quot; = citab[,4], 
+                             &quot;Estimate Upper C.I.&quot; = citab[,5], 
+                             &quot;Odds Ratio&quot; = exp(citab[,1]), 
+                             &quot;Odds Ratio lower C.I.&quot; = exp(citab[,4]), 
+                             &quot;Odds Ratio upper C.I.&quot; = exp(citab[,5]), 
+                             &quot;P-value&quot; = citab[,3])</code></pre>
 </div>
+<p>Then create the table as a Word document.</p>
+<div class="code">
+<pre class="r"><code>table &lt;- regulartable(citab_classical_mod) %&gt;%
+  set_formatter_type(fmt_double = &quot;%0.3f&quot;)
+table &lt;- width(table, width = 1.6)
+theme_vanilla(table)
+
+doc &lt;- read_docx() %&gt;%
+  body_add_flextable(value = table)
+print(doc, target = &quot;.../table.docx&quot;) %&gt;% invisible()</code></pre>
+</div>
+<p>And here is the more nicely formatted table:</p>
+<p><img src="/figs/class_table.png" alt="png" width="800"/></p>
 <p><br><br></p>
 </div>
 <div id="machine-learning-penalised-regression" class="section level3">
